@@ -46,7 +46,9 @@ PalettoTestCase.prototype.testStory6 = function () {
 PalettoTestCase.prototype.testStory7 = function () {
 
     var testVerif=false;
-    if (eng.checkBille(1,"a1")&&eng.checkNbBilles()==2)
+    eng.placeBille(1,"a1");
+
+    if (eng.checkBille(1,"a1")&&eng.checkNbBilles(2))
         testVerif=true;
 
     assertTrue(testVerif==true);

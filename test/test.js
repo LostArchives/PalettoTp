@@ -13,7 +13,7 @@ PalettoTestCase.prototype.testStory2 = function () {
 
     eng.startTheGame(); //On démarre le jeu
     assertTrue(eng.checkStartGame()==true);
-
+    //test commit
 };
 
 PalettoTestCase.prototype.testStory3 = function () {

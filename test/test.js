@@ -66,3 +66,22 @@ PalettoTestCase.prototype.testStory8 = function () {
     assertTrue(testVerif==true);
 
 };
+
+PalettoTestCase.prototype.testStory9 = function () {
+
+    var testVerif=true;
+
+    try {
+        eng.placeBille(-1, "a3");   //On essaye de placer une bille blanche en a3
+    }
+    catch(err) {
+
+        //alert('erreur'+err); Affichage de l'erreur (optionnel)
+        testVerif=false;        //Le test ne passe pas
+
+    }
+
+
+    assertTrue(testVerif==true);
+
+};

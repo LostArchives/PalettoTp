@@ -99,6 +99,10 @@ var Engine = function () {
     Engine.prototype.placeBille= function(couleur,emplacement) {
         var column=get_columnAscii(emplacement);
         var line=get_lineAscii(emplacement);
+
+        if (_plateau[line][column]!="")         //Renvoi d'une exception si emplacement non vide
+            throw "Emplacement déjà occupé";
+
         _plateau[line][column]=couleur;
         _nbBilles++;
     }

@@ -73,7 +73,7 @@ var Engine = function () {
     Engine.prototype.checkPlateau= function() {
         for (var i=0;i<6;i++)
             for (var j=0;j<6;j++)
-                if (_plateau[i][j]!=0) // 0 = emplacement vide ; 1 = bille blanche ; -1 =bille noire
+                if (_plateau[i][j]!=0) // 0 = emplacement vide ; -1 = bille blanche ; 1 =bille noire
                     return false;
         return true;
     }

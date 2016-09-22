@@ -13,12 +13,12 @@ PalettoTestCase.prototype.testStory2 = function () {
 
     eng.startTheGame(); //On démarre le jeu
     assertTrue(eng.checkStartGame()==true);
-    //test commit
+
 };
 
 PalettoTestCase.prototype.testStory3 = function () {
 
-    eng.placeBille(-1,"a1"); //On place une bille noire en A1
+    eng.placeBille(-1,"a1"); //On place une bille blanche en A1
     assertTrue(eng.checkBille(-1,"a1")==true);
 
 };
@@ -40,5 +40,15 @@ PalettoTestCase.prototype.testStory6 = function () {
 
     eng.nextTurn(); //Lancement du prochain tour
     assertTrue(eng.checkJoueurActuel("n")==true);
+
+};
+
+PalettoTestCase.prototype.testStory7 = function () {
+
+    var testVerif=false;
+    if (eng.checkBille(1,"a1")&&eng.checkNbBilles()==2)
+        testVerif=true;
+
+    assertTrue(testVerif==true);
 
 };

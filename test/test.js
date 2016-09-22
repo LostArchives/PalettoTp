@@ -46,9 +46,21 @@ PalettoTestCase.prototype.testStory6 = function () {
 PalettoTestCase.prototype.testStory7 = function () {
 
     var testVerif=false;
-    eng.placeBille(1,"a1");
+    eng.placeBille(1,"a1");       //On place une bille noire en A1
 
-    if (eng.checkBille(1,"a1")&&eng.checkNbBilles(2))
+    if (eng.checkBille(1,"a1")&&eng.checkNbBilles(2)) //On vérifie que la bille est en A1 et qu'il y a deux billes sur le plateau
+        testVerif=true;
+
+    assertTrue(testVerif==true);
+
+};
+
+PalettoTestCase.prototype.testStory8 = function () {
+
+    var testVerif=false;
+    eng.baseRotateCounter(1);   //Rotation anti-horaire eud premier sous-plateau
+
+    if (eng.checkBille(-1,"a1")&&eng.checkBille(1,"a3"))    //Si Bille blanche en A1 et bille noire en A3
         testVerif=true;
 
     assertTrue(testVerif==true);

@@ -1,267 +1,275 @@
-'use strict';
+"use strict";
 
-var Engine = function () {
+var Engine = function() {
 
 // private attributes and methods
-    var _plateau; //Plateau de jeu (tableau de 6*6 emplacements)
-    var _nbBilles;// Nombre de billes sur le plateau
-    var _joueurActuel;//Joueur actuel
+    var _game_board;
+    var _total_balls;
+    var _actual_player;
 
-    ///Fonction qui initialise le plateau
-    var createPlateau = function() {
-        _plateau = [
-            ["","","","","",""],
-            ["","","","","",""],
-            ["","","","","",""],
-            ["","","","","",""],
-            ["","","","","",""],
-            ["","","","","",""]
-        ]
-        _nbBilles=0;
-        for (var i=0;i<6;i++)
-            for (var j=0;j<6;j++)
-                _plateau[i][j]=0;
+    function fill_board () {
+
+        _total_balls = 0;
+        var curr_line;
+        var curr_column;
+
+        for (curr_line = 0; curr_line < 6; curr_line += 1) {
+            for (curr_column = 0; curr_column < 6; curr_column += 1) {
+                _game_board[curr_line][curr_column] = 0;
+            }
+
+        }
     }
 
-    ///Fonction qui permet de vérifier que le plateau est vide
-    var checkPlateau = function() {
-        for (var i=0;i<6;i++)
-            for (var j=0;j<6;j++)
-                if (_plateau[i][j]!=0)
-                    return false;
-        return true;
+    function get_column_ascii  (column_position) {
+        return column_position.charCodeAt(0) - 97;
     }
 
 
-    ///Fonction qui permet de vérifier que le joueur actuel est blanc
-    var checkStartGame = function() {
-        if (_joueurActuel=="b")
-            return true;
-        else
-            return false;
+     function get_line_ascii (line_position) {
+        return line_position.charCodeAt(1) - 49;
     }
 
+    function add_sub_boards(nb_line) {
 
-    ///Fonction qui retourne le numéro de la colonne grâce au code ascii
-    var get_columnAscii=function(emplacement) {
-        return emplacement.charCodeAt(0)-97;
+        var curr_line;
+        for (curr_line =0;curr_line<nb_line;curr_line+=1) {
+            _game_board[curr_line] = new Array();
+        }
+
     }
 
-    ///Fonction qui retourne le numéro de la ligne grâce au code ascii
-    var get_lineAscii= function(emplacement) {
-        return emplacement.charCodeAt(1)-49;
+    function create_sub_board(nb_line) {
+
+        var curr_line;
+
+        var tmp_board = new Array();
+        for (curr_line =0;curr_line<nb_line;curr_line+=1) {
+            tmp_board[curr_line] = new Array();
+        }
+
+        return tmp_board;
     }
 
-    ///Fonction qui permet de mettre à jour le nombre de billes sur le plateau
-    var countPlateau=function() {
-        for (var i=0;i<6;i++)
-            for (var j=0;j<6;j++)
-                if (_plateau[i][j]!="")
-                    _nbBilles++;
+    function get_start_column_sub_board (num_sub_board) {
+
+        var start_column = -1;
+
+        switch (num_sub_board) {
+
+            case 1:
+            case 3:
+                start_column = 0;
+                break;
+
+            case 2:
+            case 4:
+                start_column = 3;
+                break;
+
+        }
+        return start_column;
+
     }
 
+    function get_start_line_sub_board(numb_sub_board) {
+
+        var start_line = -1;
+
+        switch (numb_sub_board) {
+
+            case 1:
+            case 2:
+                start_line = 0;
+                break;
+
+            case 3:
+            case 4:
+                start_line = 3;
+                break;
+
+        }
+        return start_line;
+    }
+
+    function get_sub_board (num_sub_board) {
+
+        var start_line = get_start_line_sub_board(num_sub_board);
+        var start_column = get_start_column_sub_board(num_sub_board);
+        var curr_line;
+        var curr_column;
+
+        var tmp_board = create_sub_board(3);
+
+        for (curr_line = start_line; curr_line < start_line + 3; curr_line+=1) {
+            for (curr_column = start_column; curr_column < start_column + 3; curr_column+=1) {
+                tmp_board[curr_line][curr_column] = _game_board[curr_line][curr_column];
+            }
+        }
+        return tmp_board;
+
+    }
+
+    function copy_tmp_board(numPlateau, tmp_board) {
+
+        var startColumn = get_start_column_sub_board(numPlateau);
+        var startLine = get_start_line_sub_board(numPlateau);
+
+        var curr_line;
+        var curr_column;
+
+        for (curr_line = startLine; curr_line < startLine + 3; curr_line += 1) {
+            for (curr_column = startColumn; curr_column < startColumn + 3; curr_column += 1) {
+                _game_board[curr_line][curr_column] = tmp_board[curr_line][curr_column];
+
+            }
+        }
+
+    }
 
 // public methods
 
-    var init=function() {
-        createPlateau();
+    this.create_board = function () {
+        _game_board = new Array();
+        add_sub_boards(6);
+        fill_board();
+
     }
 
-    init(); //Initialisation du plateau
+    this.start_the_game = function () {
+        _actual_player = "b";
+    };
 
-    ///Fonction qui permet de vérifier que le plateau est vide au départ
-    Engine.prototype.checkPlateau= function() {
-        for (var i=0;i<6;i++)
-            for (var j=0;j<6;j++)
-                if (_plateau[i][j]!=0) // 0 = emplacement vide ; -1 = bille blanche ; 1 =bille noire
+    this.check_board = function () {
+
+        var curr_line;
+        var curr_column;
+
+        for (curr_line = 0; curr_line < 6; curr_line+=1) {
+            for (curr_column = 0; curr_column < 6; curr_column+=1) {
+                if (_game_board[curr_line][curr_column] !== 0) {
                     return false;
+                }
+            }
+        }
+
         return true;
-    }
 
+    };
 
-    ///Fonction qui permet d'affecter le joueur actuel à blanc
-    Engine.prototype.startTheGame= function() {
-        _joueurActuel="b";
-    }
+    this.check_start_game = function () {
 
-
-    ///Fonction qui permet de vérifier si le joueur actuel est blanc
-    Engine.prototype.checkStartGame= function() {
-        if (_joueurActuel=="b")
+        if (_actual_player === "b") {
             return true;
-        else
+        }
+        else {
             return false;
+        }
 
-    }
+    };
+
+    this.place_ball = function (color, position) {
+
+        var line_to_place = get_line_ascii(position);
+        var column_to_place = get_column_ascii(position);
 
 
-    ///Fonction qui permet de placer une bille d'une couleur précise à un emplacement précis
-    Engine.prototype.placeBille= function(couleur,emplacement) {
-        var column=get_columnAscii(emplacement);
-        var line=get_lineAscii(emplacement);
-
-        if (_plateau[line][column]!="")         //Renvoi d'une exception si emplacement non vide
+        if (_game_board[line_to_place][column_to_place] != "") {
             throw "Emplacement déjà occupé";
+        }
 
-        _plateau[line][column]=couleur;
-        _nbBilles++;
-    }
+        _game_board[line_to_place][column_to_place] = color;
+        _total_balls+=1;
+    };
 
 
-    ///Fonction qui permet de vérifier si l'emplacement passé en paramètre contient la bille de couleur passée en paramètre
-    Engine.prototype.checkBille=function(couleur,emplacement) {
-        var column=get_columnAscii(emplacement);
-        var line=get_lineAscii(emplacement);
-        if (_plateau[line][column]==couleur)
+
+    this.check_ball = function (color, position) {
+
+        var column = get_column_ascii(position);
+        var line = get_line_ascii(position);
+
+        if (_game_board[line][column] === color) {
             return true;
-        else
+        }
+        else {
             return false;
-
-    }
-
-    ///Fonction qui permet de déterminer si le nombre de billes sur le plateau est égal au nombre de billes passé en paramètre
-    Engine.prototype.checkNbBilles=function(number){
-       if (_nbBilles==number)
-           return true;
-        else
-            return false;
-    }
+        }
 
 
-    /// Fonction qui permet de vérifier si le joueur actuel est le joueur passé en paramètre
-    Engine.prototype.checkJoueurActuel=function(joueur){
-        if (_joueurActuel==joueur)
+    };
+
+
+    this.check_nb_balls = function (nb_balls) {
+
+        if (_total_balls === nb_balls) {
             return true;
-        else
+        }
+        else {
             return false;
-    }
-
-
-    /// Fonction qui permet de déterminer la colonne de départ pour un sous-plateau déterminé
-    var get_startColumn = function(numPlateau) {
-
-        switch(numPlateau) {
-
-            case 1:
-                return 0;
-                break;
-            case 2:
-                return 3;
-                break;
-            case 3:
-                return 0;
-                break;
-            case 4:
-                return 3;
-                break;
-
         }
-        return -1;
-    }
+    };
 
 
-    /// Fonction qui permet de retourner la ligne de départ pour un sous-plateau déterminé
-    var get_startLine = function(numPlateau) {
+    this.check_actual_player = function (player) {
 
-        switch(numPlateau) {
-
-            case 1:
-                return 0;
-                break;
-            case 2:
-                return 0;
-                break;
-            case 3:
-                return 3;
-                break;
-            case 4:
-                return 3;
-                break;
-
+        if (_actual_player === player) {
+            return true;
         }
-        return -1;
-    }
-
-
-    /// Fonction qui retourne l'un des sous plateaux (numérotés horizontalement de 1 à 4 )
-    var get_plateau=function(numPlateau) {
-        var ligneDebut=get_startLine(numPlateau);
-        var colonneDebut=get_startColumn(numPlateau);
-
-        var tempPlateau= [
-            ["","",""],
-            ["","",""],
-            ["","",""]
-        ]
-
-        for (var i=ligneDebut;i<ligneDebut+3;i++) {
-            for (var j=colonneDebut;j<colonneDebut+3;j++) {
-                tempPlateau[i][j]=_plateau[i][j];
-            }
+        else {
+            return false;
         }
-        return tempPlateau;
-
-    }
 
 
-    /// Fonction qui effectue une rotation de base (90 degrés sens horaire)
-    Engine.prototype.baseRotate= function(numPlateau) {
-        var tempPlateau= [
-            ["","",""],
-            ["","",""],
-            ["","",""]
-        ]
-        var subPlateau=get_plateau(numPlateau);
-        for (var i=0;i<3;i++) {
-            for (var j=0;j<3;j++) {
-                tempPlateau[i][j]=subPlateau[3-j-1][i];
-                //console.log(tempPlateau[i][j]);
-            }
-        }
-        copyTempPlateau(numPlateau,tempPlateau); // On copie le sous-plateau temporaire dans le sous-plateau de destination
-    }
-
-    /// Fonction qui effectue une rotation de base (90 degrés sens anti-horaire)
-    Engine.prototype.baseRotateCounter= function(numPlateau) {
-        var tempPlateau= [
-            ["","",""],
-            ["","",""],
-            ["","",""]
-        ]
-        var subPlateau=get_plateau(numPlateau);
-        for (var i=0;i<3;i++) {
-            for (var j=0;j<3;j++) {
-                tempPlateau[i][j]=subPlateau[j][3-i-1];
-                //console.log(tempPlateau[i][j]);
-            }
-        }
-        copyTempPlateau(numPlateau,tempPlateau); // On copie le sous-plateau temporaire dans le sous-plateau de destination
-    }
+    };
 
 
-    /// Fonction qui permet de passer au joueur suivant (déterminé selon le joueur en cours)
-    Engine.prototype.nextTurn=function() {
-        if (_joueurActuel=="b")
-            _joueurActuel="n"
-        else
-            _joueurActuel="b";
-    }
+    this.rotate_clockwise = function (num_sub_board) {
 
+        var act_line;
+        var act_column;
 
-    /// Fonction qui permet de copier un sous-plateaux temporaire dans un sous-plateau du plateau global
-    var copyTempPlateau= function(numPlateau,pplateau) {
-       var startColumn= get_startColumn(numPlateau);
-        var startLine= get_startLine(numPlateau);
+        var tmp_board = create_sub_board(3);
 
-        for (var i=startLine;i<startLine + 3;i++) {
-            for (var j = startColumn; j < startColumn + 3; j++) {
-                _plateau[i][j] = pplateau[i][j];
-                //console.log(_plateau[i][j]);
+        var sub_board = get_sub_board(num_sub_board);
+        for (act_line = 0; act_line < 3; act_line+=1) {
+            for (act_column = 0; act_column < 3; act_column+=1) {
+                tmp_board[act_line][act_column] = sub_board[3 - act_column - 1][act_line];
             }
         }
 
+        copy_tmp_board(num_sub_board, tmp_board);
+    };
 
-    }
+
+    this.rotate_anticlockwise = function (num_sub_board) {
+
+        var curr_line;
+        var curr_column;
+
+        var tmp_board = create_sub_board(3);
+
+        var sub_board = get_sub_board(num_sub_board);
+
+        for (curr_line = 0; curr_line < 3; curr_line+=1) {
+            for (curr_column = 0; curr_column < 3; curr_column+=1) {
+                tmp_board[curr_line][curr_column] = sub_board[curr_column][3 - curr_line - 1];
+            }
+        }
+
+        copy_tmp_board(num_sub_board, tmp_board);
+    };
 
 
-};
+
+   this.next_turn = function () {
+        if (_actual_player === "b") {
+            _actual_player = "n";
+        }
+        else {
+            _actual_player = "b";
+        }
+
+    };
+
+}

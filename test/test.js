@@ -169,5 +169,33 @@ PalettoTestCase.prototype.testStory13 = function () {
 
 };
 
+PalettoTestCase.prototype.testStory14 = function () {
 
+    var testVerif=false;
+
+    eng.start_the_game();
+    eng.set_start_player("white");
+    eng.play_turn_list("a1cbl;d1cbr;b1cbl;e1cbr;c1cbl;f1cbr");
+    eng.play_turn_list("a2cbl;d2cbr;b2cbl;e2cbr;c2cbl;f2cbr");
+    eng.play_turn_list("a3cbl;d3cbr;b3cbl;e3cbr;c3cbl;f3cbr");
+    eng.play_turn_list("b5ctl;a4ctr;e4ctl;b4ctr;f4ctl;d4ctr");
+    eng.play_turn_list("d5ctl;a5ctr;f5ctl;c4ctr;a6ctl;c5ctr");
+    eng.play_turn_list("b6ctl;e5ctr;d6ctl;c6ctr;f6ctl;e6ctr");
+    eng.show_board();
+
+    if (eng.check_win_line()===""
+        &&eng.check_win_column()===""
+        &&eng.check_win_left_diag()===""
+        &&eng.check_win_right_diag()==="")
+    {
+        testVerif=true;
+    }
+
+    //if (eng.check_player_color("black")&&eng.check_nb_balls(0))
+    //     testVerif = true;
+
+    assertTrue(testVerif===true);
+
+
+};
 

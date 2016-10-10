@@ -150,6 +150,7 @@ var Engine = function() {
 
     this.start_the_game = function() {
         _game_board = new Array();
+        _actual_player = "";
         _total_balls = 0;
         add_sub_boards(6);
     }
@@ -351,6 +352,8 @@ var Engine = function() {
                 this.rotate_clockwise(get_subboard_w_action_code(num_sub_board_code));
             else if (rotate_mode=="a")
                 this.rotate_anticlockwise(get_subboard_w_action_code(num_sub_board_code));
+
+            this.next_turn();
         }
     }
 

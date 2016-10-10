@@ -145,7 +145,7 @@ PalettoTestCase.prototype.testStory12 = function () {
 
     var testVerif=false;
     eng.start_the_game();
-    eng.set_start_player("black");
+    eng.set_start_player("white");
     eng.play_turn_list("c4cbl;d4abr;c3ctl;c3ctl;c4cbl;e5cbr;b1ctl;b2ctr;c4cbl;c3");
     eng.show_board();
     if (eng.check_win_diag("left")=="black")
@@ -169,3 +169,6 @@ PalettoTestCase.prototype.testStory13 = function () {
 
 
 };
+
+
+

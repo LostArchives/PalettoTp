@@ -127,3 +127,18 @@ PalettoTestCase.prototype.testStory10 = function () {
     assertTrue(testVerif===true);
 
 };
+
+PalettoTestCase.prototype.testStory11 = function () {
+
+    var testVerif=false;
+
+    eng.place_ball("white","e1");
+    eng.show_board();
+
+    if (eng.check_win_line()==="white")
+    {
+        testVerif = true;
+    }
+    assertTrue(testVerif===true);
+
+};

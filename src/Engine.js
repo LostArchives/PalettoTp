@@ -258,35 +258,24 @@ var Engine = function() {
     };
 
 
-    this.rotate_clockwise = function (num_sub_board) {
-
-        var curr_line; var curr_column;
-        var tmp_board = create_sub_board(3);
-        var sub_board = get_sub_board(num_sub_board);
-        for (curr_line = 0; curr_line < 3; curr_line+=1) {
-            for (curr_column = 0; curr_column < 3; curr_column+=1) {
-                tmp_board[curr_line][curr_column] = sub_board[3 - curr_column - 1][curr_line];
+    this.rotate = function (mode, num_sub_board) {
+        if (mode!=="") {
+            var cur_line; var cur_column;
+            var tmp_board = create_sub_board(3);
+            var sub_board = get_sub_board(num_sub_board);
+            for (cur_line = 0; cur_line < 3; cur_line+=1) {
+                for (cur_column = 0; cur_column < 3; cur_column+=1) {
+                    if (mode==="c") {
+                        tmp_board[cur_line][cur_column] = sub_board[3 - cur_column - 1][cur_line];
+                    }
+                    else if (mode==="a") {
+                        tmp_board[cur_line][cur_column] = sub_board[cur_column][3 - cur_line - 1];
+                    }
+                }
             }
+            copy_tmp_board(num_sub_board, tmp_board);
         }
-        copy_tmp_board(num_sub_board, tmp_board);
     };
-
-
-    this.rotate_anticlockwise = function (num_sub_board) {
-
-        var curr_line;
-        var curr_column;
-        var tmp_board = create_sub_board(3);
-        var sub_board = get_sub_board(num_sub_board);
-
-        for (curr_line = 0; curr_line < 3; curr_line+=1) {
-            for (curr_column = 0; curr_column < 3; curr_column+=1) {
-                tmp_board[curr_line][curr_column] = sub_board[curr_column][3 - curr_line - 1];
-            }
-        }
-        copy_tmp_board(num_sub_board, tmp_board);
-    };
-
 
 
    this.next_turn = function () {
@@ -306,11 +295,14 @@ var Engine = function() {
             for (curr_column = 0;curr_column <6-1;curr_column+=1) {
                 if (_game_board[curr_line][curr_column]===_game_board[curr_line][curr_column+1]) {
                     nb_align+=1;
-                    if (nb_align===5)
+                    if (nb_align===5) {
                         return _game_board[curr_line][curr_column];
+                    }
+
                 }
-                else
+                else {
                     nb_align=0;
+                }
             }
         }
         return "";
@@ -327,8 +319,10 @@ var Engine = function() {
                         return _game_board[curr_line][curr_column];
                     }
                 }
-                else
+                else {
                     nb_align=0;
+                }
+
             }
         }
         return "";
@@ -338,49 +332,53 @@ var Engine = function() {
 
     this.check_win_left_diag = function () {
         var cur_diag; var size = 6; var nb_align = 1;
-
         for (cur_diag=0;cur_diag<size-1;cur_diag+=1) {
                 if (_game_board[cur_diag][cur_diag]==_game_board[cur_diag+1][cur_diag+1]) {
                     nb_align+=1;
-                    if (nb_align===5)
+                    if (nb_align===5) {
                         return _game_board[cur_diag][cur_diag];
-                } else
+                    }
+                } else {
                     nb_align = 0;
+                }
+
         }
         return "";
-    }
+    };
+
 
     this.check_win_right_diag = function () {
-        var cur_diag; var size = 6; var nb_align = 1;
-
-        for (cur_diag=0;cur_diag<size-1;cur_diag+=1) {
-                if (_game_board[cur_diag][size-cur_diag]==_game_board[cur_diag+1][size-cur_diag-1])
+        var cur_pos; var size = 6; var nb_align = 1;
+        for (cur_pos=0;cur_pos<size-1;cur_pos+=1) {
+                if (_game_board[cur_pos][size-cur_pos]===_game_board[cur_pos+1][size-cur_pos-1]) {
                     nb_align+=1;
-                if (nb_align===5)
-                    return _game_board[cur_diag][cur_diag];
-                else
-                    nb_align =0;
+                    if (nb_align===5) {
+                        return _game_board[cur_pos][cur_pos];
+                    }
+                    else {
+                        nb_align =0;
+                    }
+
+                }
+
         }
         return "";
-    }
+    };
 
 
     this.play_turn_list = function (action_text) {
 
         var action_list = action_text.split(";");
+        var action_count; var ball_position; var rotate_mode; var num_sub_board_code;
 
-        for (var action_count =0;action_count<action_list.length;action_count+=1) {
-            var ball_position = action_list[action_count].substring(0,2);
-            var rotate_mode = action_list[action_count].substring(2,3);
-            var num_sub_board_code = action_list[action_count].substring(3,5);
+        for (action_count =0;action_count<action_list.length;action_count+=1) {
+            ball_position = action_list[action_count].substring(0,2);
+            rotate_mode = action_list[action_count].substring(2,3);
+            num_sub_board_code = action_list[action_count].substring(3,5);
             this.place_ball(_actual_player,ball_position);
-            if (rotate_mode=="c")
-                this.rotate_clockwise(get_subboard_w_action_code(num_sub_board_code));
-            else if (rotate_mode=="a")
-                this.rotate_anticlockwise(get_subboard_w_action_code(num_sub_board_code));
-
+            this.rotate(rotate_mode,get_subboard_w_action_code(num_sub_board_code));
             this.next_turn();
         }
-    }
+    };
 
 }

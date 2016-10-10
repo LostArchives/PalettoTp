@@ -31,7 +31,7 @@ PalettoTestCase.prototype.testStory4 = function () {
 
 PalettoTestCase.prototype.testStory5 = function () {
 
-    eng.rotate_clockwise(1); //Rotation du sous-plateau 1
+    eng.rotate("c",1); //Rotation du sous-plateau 1
 
     assertTrue(eng.check_ball("white","c1")===true);
 
@@ -61,7 +61,7 @@ PalettoTestCase.prototype.testStory7 = function () {
 PalettoTestCase.prototype.testStory8 = function () {
 
     var testVerif=false;
-    eng.rotate_anticlockwise(1);   //Rotation anti-horaire eud premier sous-plateau
+    eng.rotate("a",1);   //Rotation anti-horaire eud premier sous-plateau
 
     if (eng.check_ball("white","a1")&&eng.check_ball("black","a3")) {
         testVerif=true;
@@ -94,23 +94,23 @@ PalettoTestCase.prototype.testStory10 = function () {
     var testVerif=false;
 
     eng.place_ball("white","b1");
-    eng.rotate_clockwise(1);
+    eng.rotate("c",1);
 
     eng.place_ball("black","a2");
-    eng.rotate_anticlockwise(1);
+    eng.rotate("a",1);
 
 
     eng.place_ball("white","c1");
-    eng.rotate_clockwise(1);
+    eng.rotate("c",1);
 
     eng.place_ball("black","a3");
-    eng.rotate_anticlockwise(1);
+    eng.rotate("a",1);
 
     eng.place_ball("white","d1");
-    eng.rotate_anticlockwise(2);
+    eng.rotate("a",2);
 
     eng.place_ball("black","f3");
-    eng.rotate_clockwise(2);
+    eng.rotate("c",2);
 
 
 

@@ -316,24 +316,50 @@ var Engine = function() {
         return "";
     };
 
-    this.check_win_diag = function (side_diagon) {
+    this.check_win_column = function () {
+        var nb_align; var curr_line; var curr_column;
+        for (curr_column = 0;curr_column<6;curr_column+=1) {
+            nb_align=1;
+            for (curr_line = 0;curr_line <6-1;curr_line+=1) {
+                if (_game_board[curr_line][curr_column]===_game_board[curr_line+1][curr_column]) {
+                    nb_align+=1;
+                    if (nb_align===5) {
+                        return _game_board[curr_line][curr_column];
+                    }
+                }
+                else
+                    nb_align=0;
+            }
+        }
+        return "";
+    };
+
+
+
+    this.check_win_left_diag = function () {
         var cur_diag; var size = 6; var nb_align = 1;
+
         for (cur_diag=0;cur_diag<size-1;cur_diag+=1) {
-            if (side_diagon=="left") {
                 if (_game_board[cur_diag][cur_diag]==_game_board[cur_diag+1][cur_diag+1]) {
                     nb_align+=1;
                     if (nb_align===5)
                         return _game_board[cur_diag][cur_diag];
                 } else
                     nb_align = 0;
-            } else  if (side_diagon=="right"){
+        }
+        return "";
+    }
+
+    this.check_win_right_diag = function () {
+        var cur_diag; var size = 6; var nb_align = 1;
+
+        for (cur_diag=0;cur_diag<size-1;cur_diag+=1) {
                 if (_game_board[cur_diag][size-cur_diag]==_game_board[cur_diag+1][size-cur_diag-1])
                     nb_align+=1;
-                    if (nb_align===5)
-                        return _game_board[cur_diag][cur_diag];
+                if (nb_align===5)
+                    return _game_board[cur_diag][cur_diag];
                 else
                     nb_align =0;
-            }
         }
         return "";
     }

@@ -81,7 +81,7 @@ PalettoTestCase.prototype.testStory9 = function () {
     }
     catch(e) {
 
-        console.log(e);
+        //console.log(e);
         testVerif=true;        //Le test ne passe pas
     }
 
@@ -147,8 +147,7 @@ PalettoTestCase.prototype.testStory12 = function () {
     eng.start_the_game();
     eng.set_start_player("white");
     eng.play_turn_list("c4cbl;d4abr;c3ctl;c3ctl;c4cbl;e5cbr;b1ctl;b2ctr;c4cbl;c3");
-    eng.show_board();
-    if (eng.check_win_diag("left")=="black")
+    if (eng.check_win_left_diag()=="black")
         testVerif=true;
 
     assertTrue(testVerif===true);

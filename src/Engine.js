@@ -137,7 +137,7 @@ var Engine = function() {
     }
 
     this.start_the_game = function () {
-        _actual_player = "b";
+        _actual_player = "white";
     };
 
     this.check_board = function () {
@@ -159,7 +159,7 @@ var Engine = function() {
 
     this.check_start_game = function () {
 
-        if (_actual_player === "b") {
+        if (_actual_player === "white") {
             return true;
         }
         else {
@@ -226,15 +226,15 @@ var Engine = function() {
 
     this.rotate_clockwise = function (num_sub_board) {
 
-        var act_line;
-        var act_column;
+        var curr_line;
+        var curr_column;
 
         var tmp_board = create_sub_board(3);
 
         var sub_board = get_sub_board(num_sub_board);
-        for (act_line = 0; act_line < 3; act_line+=1) {
-            for (act_column = 0; act_column < 3; act_column+=1) {
-                tmp_board[act_line][act_column] = sub_board[3 - act_column - 1][act_line];
+        for (curr_line = 0; curr_line < 3; curr_line+=1) {
+            for (curr_column = 0; curr_column < 3; curr_column+=1) {
+                tmp_board[curr_line][curr_column] = sub_board[3 - curr_column - 1][curr_line];
             }
         }
 
@@ -263,11 +263,11 @@ var Engine = function() {
 
 
    this.next_turn = function () {
-        if (_actual_player === "b") {
-            _actual_player = "n";
+        if (_actual_player === "white") {
+            _actual_player = "black";
         }
         else {
-            _actual_player = "b";
+            _actual_player = "white";
         }
 
     };

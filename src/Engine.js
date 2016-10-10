@@ -7,20 +7,6 @@ var Engine = function() {
     var _total_balls;
     var _actual_player;
 
-    function fill_board () {
-
-        _total_balls = 0;
-        var curr_line;
-        var curr_column;
-
-        for (curr_line = 0; curr_line < 6; curr_line += 1) {
-            for (curr_column = 0; curr_column < 6; curr_column += 1) {
-                _game_board[curr_line][curr_column] = 0;
-            }
-
-        }
-    }
-
     function get_column_ascii  (column_position) {
         return column_position.charCodeAt(0) - 97;
     }
@@ -33,23 +19,35 @@ var Engine = function() {
     function add_sub_boards(nb_line) {
 
         var curr_line;
+        var curr_column;
+
         for (curr_line =0;curr_line<nb_line;curr_line+=1) {
             _game_board[curr_line] = new Array();
+            for (curr_column = 0;curr_column<6;curr_column+=1) {
+                _game_board[curr_line][curr_column]="empty";
+            }
         }
 
     }
+
+
 
     function create_sub_board(nb_line) {
 
         var curr_line;
-
+        var curr_column;
         var tmp_board = new Array();
         for (curr_line =0;curr_line<nb_line;curr_line+=1) {
             tmp_board[curr_line] = new Array();
+            for (curr_column = 0;curr_column<nb_line;curr_column+=1) {
+                tmp_board[curr_line][curr_column]="empty";
+            }
         }
 
         return tmp_board;
     }
+
+
 
     function get_start_column_sub_board (num_sub_board) {
 
@@ -98,13 +96,18 @@ var Engine = function() {
         var start_column = get_start_column_sub_board(num_sub_board);
         var curr_line;
         var curr_column;
+        var curr_tmp_line = 0;
+        var curr_tmp_column = 0;
 
         var tmp_board = create_sub_board(3);
 
         for (curr_line = start_line; curr_line < start_line + 3; curr_line+=1) {
             for (curr_column = start_column; curr_column < start_column + 3; curr_column+=1) {
-                tmp_board[curr_line][curr_column] = _game_board[curr_line][curr_column];
+                tmp_board[curr_tmp_line][curr_tmp_column] = _game_board[curr_line][curr_column];
+                curr_tmp_column+=1;
             }
+            curr_tmp_line+=1;
+            curr_tmp_column=0;
         }
         return tmp_board;
 
@@ -117,12 +120,16 @@ var Engine = function() {
 
         var curr_line;
         var curr_column;
+        var curr_sb_line = 0;
+        var curr_sb_column = 0;
 
         for (curr_line = startLine; curr_line < startLine + 3; curr_line += 1) {
             for (curr_column = startColumn; curr_column < startColumn + 3; curr_column += 1) {
-                _game_board[curr_line][curr_column] = tmp_board[curr_line][curr_column];
-
-            }
+                _game_board[curr_line][curr_column] = tmp_board[curr_sb_line][curr_sb_column];
+                curr_sb_column+=1;
+        }
+                curr_sb_line+=1;
+                curr_sb_column = 0;
         }
 
     }
@@ -131,9 +138,22 @@ var Engine = function() {
 
     this.create_board = function () {
         _game_board = new Array();
+        _total_balls = 0;
         add_sub_boards(6);
-        fill_board();
 
+    }
+
+    this.show_board = function() {
+
+        var curr_line;
+
+        for (curr_line = 0;curr_line<6;curr_line+=1) {
+
+                console.log(_game_board[curr_line][0]+" "+_game_board[curr_line][1]+" "+
+                            _game_board[curr_line][2]+" "+_game_board[curr_line][3]+" " +
+                            _game_board[curr_line][4]+" "+_game_board[curr_line][5]);
+
+        }
     }
 
     this.start_the_game = function () {
@@ -147,7 +167,7 @@ var Engine = function() {
 
         for (curr_line = 0; curr_line < 6; curr_line+=1) {
             for (curr_column = 0; curr_column < 6; curr_column+=1) {
-                if (_game_board[curr_line][curr_column] !== 0) {
+                if (_game_board[curr_line][curr_column] != "empty") {
                     return false;
                 }
             }
@@ -174,8 +194,8 @@ var Engine = function() {
         var column_to_place = get_column_ascii(position);
 
 
-        if (_game_board[line_to_place][column_to_place] != "") {
-            throw "Emplacement déjà occupé";
+        if (_game_board[line_to_place][column_to_place] != "empty") {
+            throw "Emplacement déjà occupé par "+_game_board[line_to_place][column_to_place];
         }
 
         _game_board[line_to_place][column_to_place] = color;
@@ -235,6 +255,7 @@ var Engine = function() {
         for (curr_line = 0; curr_line < 3; curr_line+=1) {
             for (curr_column = 0; curr_column < 3; curr_column+=1) {
                 tmp_board[curr_line][curr_column] = sub_board[3 - curr_column - 1][curr_line];
+
             }
         }
 
@@ -254,6 +275,7 @@ var Engine = function() {
         for (curr_line = 0; curr_line < 3; curr_line+=1) {
             for (curr_column = 0; curr_column < 3; curr_column+=1) {
                 tmp_board[curr_line][curr_column] = sub_board[curr_column][3 - curr_line - 1];
+
             }
         }
 

@@ -32,6 +32,7 @@ PalettoTestCase.prototype.testStory4 = function () {
 PalettoTestCase.prototype.testStory5 = function () {
 
     eng.rotate_clockwise(1); //Rotation du sous-plateau 1
+
     assertTrue(eng.check_ball("white","c1")===true);
 
 };
@@ -87,3 +88,5 @@ PalettoTestCase.prototype.testStory9 = function () {
     assertTrue(testVerif===true);
 
 };
+
+

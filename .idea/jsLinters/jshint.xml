@@ -8,7 +8,7 @@
     <option browserify="false" />
     <option camelcase="false" />
     <option couch="false" />
-    <option curly="true" />
+    <option curly="false" />
     <option debug="false" />
     <option devel="false" />
     <option dojo="false" />

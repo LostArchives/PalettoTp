@@ -248,17 +248,14 @@ var Engine = function() {
 
         var curr_line;
         var curr_column;
-
         var tmp_board = create_sub_board(3);
 
         var sub_board = get_sub_board(num_sub_board);
         for (curr_line = 0; curr_line < 3; curr_line+=1) {
             for (curr_column = 0; curr_column < 3; curr_column+=1) {
                 tmp_board[curr_line][curr_column] = sub_board[3 - curr_column - 1][curr_line];
-
             }
         }
-
         copy_tmp_board(num_sub_board, tmp_board);
     };
 
@@ -267,9 +264,7 @@ var Engine = function() {
 
         var curr_line;
         var curr_column;
-
         var tmp_board = create_sub_board(3);
-
         var sub_board = get_sub_board(num_sub_board);
 
         for (curr_line = 0; curr_line < 3; curr_line+=1) {
@@ -278,7 +273,6 @@ var Engine = function() {
 
             }
         }
-
         copy_tmp_board(num_sub_board, tmp_board);
     };
 
@@ -292,6 +286,22 @@ var Engine = function() {
             _actual_player = "white";
         }
 
+    };
+
+    this.check_win_line = function () {
+        var nb_align;
+        var curr_line; var curr_column;
+        for (curr_line = 0;curr_line<6;curr_line+=1) {
+            nb_align=0;
+            for (curr_column = 0;curr_column <6;curr_column+=1) {
+                if (_game_board[curr_line][0]===_game_board[curr_line][curr_column]) {
+                    nb_align+=1;
+                    if (nb_align===5)
+                        return _game_board[curr_line][0];
+                }
+            }
+        }
+        return "noWinner";
     };
 
 }

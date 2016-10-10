@@ -94,13 +94,9 @@ var Engine = function() {
 
         var start_line = get_start_line_sub_board(num_sub_board);
         var start_column = get_start_column_sub_board(num_sub_board);
-        var curr_line;
-        var curr_column;
-        var curr_tmp_line = 0;
-        var curr_tmp_column = 0;
-
+        var curr_line; var curr_column;
+        var curr_tmp_line = 0;  var curr_tmp_column = 0;
         var tmp_board = create_sub_board(3);
-
         for (curr_line = start_line; curr_line < start_line + 3; curr_line+=1) {
             for (curr_column = start_column; curr_column < start_column + 3; curr_column+=1) {
                 tmp_board[curr_tmp_line][curr_tmp_column] = _game_board[curr_line][curr_column];
@@ -110,18 +106,14 @@ var Engine = function() {
             curr_tmp_column=0;
         }
         return tmp_board;
-
     }
 
     function copy_tmp_board(numPlateau, tmp_board) {
 
         var startColumn = get_start_column_sub_board(numPlateau);
         var startLine = get_start_line_sub_board(numPlateau);
-
-        var curr_line;
-        var curr_column;
-        var curr_sb_line = 0;
-        var curr_sb_column = 0;
+        var curr_line; var curr_column;
+        var curr_sb_line = 0; var curr_sb_column = 0;
 
         for (curr_line = startLine; curr_line < startLine + 3; curr_line += 1) {
             for (curr_column = startColumn; curr_column < startColumn + 3; curr_column += 1) {
@@ -134,13 +126,32 @@ var Engine = function() {
 
     }
 
+    function get_subboard_w_action_code(action_code) {
+        var num = -1;
+        switch(action_code) {
+
+            case "tl":
+                num = 1;
+                break;
+            case "tr":
+                num = 2;
+                break;
+            case "bl":
+                num = 3;
+                break;
+            case "br":
+                num = 4;
+                break;
+        }
+        return num;
+    }
+
 // public methods
 
-    this.create_board = function () {
+    this.start_the_game = function() {
         _game_board = new Array();
         _total_balls = 0;
         add_sub_boards(6);
-
     }
 
     this.show_board = function() {
@@ -156,8 +167,10 @@ var Engine = function() {
         }
     }
 
-    this.start_the_game = function () {
-        _actual_player = "white";
+
+
+    this.set_start_player = function (start_player_color) {
+        _actual_player = start_player_color;
     };
 
     this.check_board = function () {
@@ -177,9 +190,9 @@ var Engine = function() {
 
     };
 
-    this.check_start_game = function () {
+    this.check_player_color = function (player_color) {
 
-        if (_actual_player === "white") {
+        if (_actual_player === player_color) {
             return true;
         }
         else {
@@ -246,10 +259,8 @@ var Engine = function() {
 
     this.rotate_clockwise = function (num_sub_board) {
 
-        var curr_line;
-        var curr_column;
+        var curr_line; var curr_column;
         var tmp_board = create_sub_board(3);
-
         var sub_board = get_sub_board(num_sub_board);
         for (curr_line = 0; curr_line < 3; curr_line+=1) {
             for (curr_column = 0; curr_column < 3; curr_column+=1) {
@@ -270,7 +281,6 @@ var Engine = function() {
         for (curr_line = 0; curr_line < 3; curr_line+=1) {
             for (curr_column = 0; curr_column < 3; curr_column+=1) {
                 tmp_board[curr_line][curr_column] = sub_board[curr_column][3 - curr_line - 1];
-
             }
         }
         copy_tmp_board(num_sub_board, tmp_board);
@@ -301,7 +311,43 @@ var Engine = function() {
                 }
             }
         }
-        return "noWinner";
+        return "";
     };
+
+    this.check_win_diag = function (side_diagon) {
+        var size = 6; var nb_align = 1;
+        var cur_diag;
+        for (cur_diag=0;cur_diag<size-1;cur_diag+=1) {
+            if (side_diagon=="left") {
+                if (_game_board[cur_diag][cur_diag]==_game_board[cur_diag+1][cur_diag+1]) {
+                    nb_align+=1;
+                }
+            }
+            else  if (side_diagon=="right"){
+                if (_game_board[cur_diag][size-cur_diag]==_game_board[cur_diag+1][size-cur_diag-1])
+                    nb_align+=1
+            }
+        }
+        if (nb_align===5)
+        return _game_board[0][0];
+        else
+            return "";
+    }
+
+    this.play_turn_list = function (action_text) {
+
+        var action_list = action_text.split(";");
+
+        for (var action_count =0;action_count<action_list.length;action_count+=1) {
+            var ball_position = action_list[action_count].substring(0,2);
+            var rotate_mode = action_list[action_count].substring(2,3);
+            var num_sub_board_code = action_list[action_count].substring(3,5);
+            this.place_ball(_actual_player,ball_position);
+            if (rotate_mode=="c")
+                this.rotate_clockwise(get_subboard_w_action_code(num_sub_board_code));
+            else if (rotate_mode=="a")
+                this.rotate_anticlockwise(get_subboard_w_action_code(num_sub_board_code));
+        }
+    }
 
 }

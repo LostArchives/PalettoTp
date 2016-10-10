@@ -89,4 +89,41 @@ PalettoTestCase.prototype.testStory9 = function () {
 
 };
 
+PalettoTestCase.prototype.testStory10 = function () {
 
+    var testVerif=false;
+
+    eng.place_ball("white","b1");
+    eng.rotate_clockwise(1);
+
+    eng.place_ball("black","a2");
+    eng.rotate_anticlockwise(1);
+
+
+    eng.place_ball("white","c1");
+    eng.rotate_clockwise(1);
+
+    eng.place_ball("black","a3");
+    eng.rotate_anticlockwise(1);
+
+    eng.place_ball("white","d1");
+    eng.rotate_anticlockwise(2);
+
+    eng.place_ball("black","f3");
+    eng.rotate_clockwise(2);
+
+    eng.show_board();
+
+    if (
+        eng.check_nb_balls(8)
+        &&eng.check_ball("white","a1") &&eng.check_ball("white","b1")
+        &&(eng.check_ball("white","c1"))&&(eng.check_ball("white","d1"))
+        &&(eng.check_ball("black","a3"))&&(eng.check_ball("black","b3"))
+        &&(eng.check_ball("black","c3"))&&(eng.check_ball("black","d3"))
+    )
+    {
+        testVerif = true;
+    }
+    assertTrue(testVerif===true);
+
+};

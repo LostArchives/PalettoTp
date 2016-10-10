@@ -156,3 +156,16 @@ PalettoTestCase.prototype.testStory12 = function () {
 
 };
 
+PalettoTestCase.prototype.testStory13 = function () {
+
+    var testVerif=false;
+    eng.start_the_game();
+    eng.set_start_player("black");
+
+    if (eng.check_player_color("black")&&eng.check_nb_balls(0))
+        testVerif = true;
+
+    assertTrue(testVerif===true);
+
+
+};

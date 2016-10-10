@@ -155,3 +155,4 @@ PalettoTestCase.prototype.testStory12 = function () {
 
 
 };
+

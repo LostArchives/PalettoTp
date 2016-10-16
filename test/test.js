@@ -7,7 +7,7 @@ var xl = new Engine("xl");
 
 PalettoTestCase.prototype.testStory1 = function () {
 
-    eng.start_the_game();
+    eng.start_the_game(2);
     assertTrue(eng.check_board()===true);
 };
 
@@ -147,7 +147,7 @@ PalettoTestCase.prototype.testStory12 = function () {
 
     var testVerif=false;
 
-    eng.start_the_game();
+    eng.start_the_game(2);
     eng.set_start_player("white");
     eng.play_turn_list("c4cbl;d4abr;c3ctl;c3ctl;c4cbl;e5cbr;b1ctl;b2ctr;c4cbl;c3");
 
@@ -166,7 +166,7 @@ PalettoTestCase.prototype.testStory12 = function () {
 PalettoTestCase.prototype.testStory13 = function () {
 
     var testVerif=false;
-    eng.start_the_game();
+    eng.start_the_game(2);
     eng.set_start_player("black");
 
     if (eng.check_player_color("black")&&eng.check_nb_balls(0)) {
@@ -182,7 +182,7 @@ PalettoTestCase.prototype.testStory14 = function () {
 
     var testVerif=false;
 
-    eng.start_the_game();
+    eng.start_the_game(2);
     eng.set_start_player("white");
 
     eng.play_turn_list("a1cbl;d1cbr;b1cbl;e1cbr;c1cbl;f1cbr");
@@ -215,7 +215,7 @@ PalettoTestCase.prototype.testStory15 = function () {
 
     var testVerif=false;
 
-    eng.start_the_game();
+    eng.start_the_game(2);
     eng.set_start_player("white");
 
     try {
@@ -235,7 +235,7 @@ PalettoTestCase.prototype.testStory16 = function () {
 
     var testVerif=false;
 
-    xl.start_the_game();
+    xl.start_the_game(4);
     xl.set_start_player("red");
     xl.place_ball(xl.get_actual_player(),"i1");
     console.log("Test story 16 :");
@@ -270,4 +270,7 @@ PalettoTestCase.prototype.testStory17 = function () {
     assertTrue(testVerif===true);
 
 };
+
+
+
 

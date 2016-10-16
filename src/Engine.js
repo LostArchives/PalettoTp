@@ -11,6 +11,8 @@ var Engine = function(type) {
     var sub_board_per_line;
     var _free_space;
     var _player_colors;
+    var active_players;
+    var nb_players;
 
 
     function get_column_ascii  (column_position) {
@@ -140,13 +142,88 @@ var Engine = function(type) {
     function get_player_index(color) {
 
         var cntPlayer;
-        for (cntPlayer = 0 ; cntPlayer < _player_colors.length;cntPlayer+=1) {
-            if (color==_player_colors[cntPlayer]) {
+        for (cntPlayer = 0 ; cntPlayer < active_players.length;cntPlayer+=1) {
+            if (color==active_players[cntPlayer]) {
                 return cntPlayer;
             }
         }
 
         return  -1;
+    }
+
+    function init_active_players() {
+        var cntPlayer;
+        var color;
+
+        if (type=="xl")
+        {
+            if (nb_players==3) {
+
+            active_players = new Array();
+            random_player_color();
+
+            }
+
+            else
+            {
+                active_players = _player_colors;
+            }
+        }
+        else
+        {
+            active_players = _player_colors;
+        }
+    }
+
+    function random_player_color() {
+
+        var cntPlayer;
+        var color;
+        var index;
+        for (cntPlayer = 0; cntPlayer < 3; cntPlayer += 1) {
+
+                do {
+                    color = Math.floor(Math.random() * _player_colors.length);
+                    index = active_players.indexOf(_player_colors[color]);
+
+                } while (index!=-1)
+
+            active_players[cntPlayer] = _player_colors[color];
+
+        }
+        reorder_player();
+    }
+
+
+    function reorder_player() {
+        var todelete = -1;
+        var cntcolor;
+        for (cntcolor = 0 ;cntcolor< 3;cntcolor+=1) {
+            var index =  active_players.indexOf(_player_colors[cntcolor]);
+            if (index==-1) {
+                todelete = cntcolor;
+                break;
+            }
+
+        }
+        delete_color_not_in(todelete);
+
+    }
+
+    function copy_color() {
+        var arr = new Array();
+        var cnt_color
+        for (cnt_color=0;cnt_color<_player_colors.length;cnt_color++) {
+            arr[cnt_color]=_player_colors[cnt_color];
+        }
+        return arr;
+    }
+
+    function delete_color_not_in(index) {
+        var temp = copy_color();
+        _player_colors.splice(index,1);
+        active_players = _player_colors;
+        _player_colors = temp;
     }
 
 
@@ -165,13 +242,19 @@ var Engine = function(type) {
         return _actual_player;
     }
 
-    this.start_the_game = function() {
+    this.get_active_players = function() {
+        return active_players;
+    }
+
+    this.start_the_game = function(nbPlayer) {
         _game_board = [];
         _actual_player = "";
         _total_balls = 0;
         init_all_size();
         _free_space = _board_size*_board_size;
+        nb_players = nbPlayer;
         init_players_colors();
+        init_active_players();
         add_sub_boards();
     }
 
@@ -318,12 +401,12 @@ var Engine = function(type) {
    this.next_turn = function () {
 
        var nextIndex = get_player_index(_actual_player)+1;
-       if (nextIndex>_player_colors.length-1) {
+       if (nextIndex>active_players.length-1) {
            nextIndex = 0;
        }
 
 
-       _actual_player = _player_colors[nextIndex];
+       _actual_player = active_players[nextIndex];
 
     }
 
@@ -445,5 +528,15 @@ var Engine = function(type) {
             this.next_turn();
         }
     };
+
+    this.get_order_array = function() {
+        var order_arr = new Array();
+
+        for (var cnt = 0 ;cnt<3;cnt+=1) {
+            order_arr[cnt]= _player_colors.indexOf(active_players[cnt]);
+        }
+
+        return order_arr;
+    }
 
 }

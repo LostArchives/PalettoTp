@@ -316,7 +316,8 @@ var Engine = function(type) {
 
 
    this.next_turn = function () {
-        var nextIndex = get_player_index(_actual_player)+1;
+
+       var nextIndex = get_player_index(_actual_player)+1;
        if (nextIndex>_player_colors.length-1) {
            nextIndex = 0;
        }

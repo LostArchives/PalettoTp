@@ -231,4 +231,21 @@ PalettoTestCase.prototype.testStory15 = function () {
 
 };
 
+PalettoTestCase.prototype.testStory16 = function () {
+
+    var testVerif=false;
+
+    xl.start_the_game();
+    xl.set_start_player("red");
+    xl.place_ball(xl.get_actual_player(),"i1");
+    console.log("Test story 16 :");
+    xl.show_board(xl.get_board());
+
+    if (xl.get_board_size()===9 && xl.check_actual_player("red")) {
+        testVerif = true;
+    }
+
+    assertTrue(testVerif===true);
+
+};
 

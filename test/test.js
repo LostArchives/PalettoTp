@@ -249,4 +249,25 @@ PalettoTestCase.prototype.testStory16 = function () {
 
 };
 
+PalettoTestCase.prototype.testStory17 = function () {
+
+    var testVerif=false;
+    var cntOrder;
+    var order = xl.get_actual_player();
+
+    for (cntOrder = 0; cntOrder<4;cntOrder+=1) {
+        xl.next_turn();
+        order+=";"+xl.get_actual_player();
+    }
+
+    console.log("Test story 17 :");
+    console.log(order);
+
+    if (order=="red;yellow;green;blue;red")
+        testVerif = true;
+
+
+    assertTrue(testVerif===true);
+
+};
 

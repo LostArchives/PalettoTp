@@ -2,7 +2,8 @@
 
 var PalettoTestCase = TestCase("PalettoTestCase");
 
-var eng=new Engine();
+var eng=new Engine("normal");
+var xl = new Engine("xl");
 
 PalettoTestCase.prototype.testStory1 = function () {
 
@@ -12,6 +13,7 @@ PalettoTestCase.prototype.testStory1 = function () {
 
 PalettoTestCase.prototype.testStory2 = function () {
     eng.set_start_player("white");
+
     assertTrue(eng.check_player_color("white")===true);
 
 };
@@ -31,7 +33,7 @@ PalettoTestCase.prototype.testStory4 = function () {
 
 PalettoTestCase.prototype.testStory5 = function () {
 
-    eng.rotate("c",1); //Rotation du sous-plateau 1
+    eng.rotate("c",0); //Rotation du sous-plateau 1
     assertTrue(eng.check_ball("white","c1")===true);
 
 };
@@ -58,7 +60,7 @@ PalettoTestCase.prototype.testStory7 = function () {
 PalettoTestCase.prototype.testStory8 = function () {
 
     var testVerif=false;
-    eng.rotate("a",1);   //Rotation anti-horaire eud premier sous-plateau
+    eng.rotate("a",0);   //Rotation anti-horaire eud premier sous-plateau
 
     if (eng.check_ball("white","a1")&&eng.check_ball("black","a3")) {
         testVerif=true;
@@ -91,28 +93,28 @@ PalettoTestCase.prototype.testStory10 = function () {
     eng.set_start_player("white");
 
     eng.place_ball("white","b1");
-    eng.rotate("c",1);
+    eng.rotate("c",0);
     eng.next_turn();
 
     eng.place_ball("black","a2");
-    eng.rotate("a",1);
+    eng.rotate("a",0);
     eng.next_turn();
 
 
     eng.place_ball("white","c1");
-    eng.rotate("c",1);
+    eng.rotate("c",0);
     eng.next_turn();
 
     eng.place_ball("black","a3");
-    eng.rotate("a",1);
+    eng.rotate("a",0);
     eng.next_turn();
 
     eng.place_ball("white","d1");
-    eng.rotate("a",2);
+    eng.rotate("a",1);
     eng.next_turn();
 
     eng.place_ball("black","f3");
-    eng.rotate("c",2);
+    eng.rotate("c",1);
     eng.next_turn();
 
     if (eng.check_nb_balls(8)
@@ -190,6 +192,7 @@ PalettoTestCase.prototype.testStory14 = function () {
     eng.play_turn_list("b5ctl;a4ctr;e4ctl;b4ctr;f4ctl;d4ctr");
     eng.play_turn_list("d5ctl;a5ctr;f5ctl;c4ctr;a6ctl;c5ctr");
     eng.play_turn_list("b6ctl;e5ctr;d6ctl;c6ctr;f6ctl;e6ctr");
+    console.log("Test story 15");
     eng.show_board(eng.get_board());
 
     var diag_bottom_top = eng.get_diagonal(eng.get_board(),true);
@@ -227,4 +230,5 @@ PalettoTestCase.prototype.testStory15 = function () {
     assertTrue(testVerif===true);
 
 };
+
 

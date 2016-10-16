@@ -1,13 +1,17 @@
 "use strict";
 
-var Engine = function() {
+var Engine = function(type) {
 
 // private attributes and methods
     var _game_board;
     var _total_balls;
     var _actual_player;
-    var _size_per_line;
+    var _board_size;
+    var sub_board_size;
+    var sub_board_per_line;
     var _free_space;
+    var _player_colors;
+
 
     function get_column_ascii  (column_position) {
         return column_position.charCodeAt(0) - 97;
@@ -18,14 +22,14 @@ var Engine = function() {
         return line_position.charCodeAt(1) - 49;
     }
 
-    function add_sub_boards(nb_line) {
+    function add_sub_boards() {
 
         var curr_line;
         var curr_column;
 
-        for (curr_line =0;curr_line<nb_line;curr_line+=1) {
+        for (curr_line =0;curr_line<_board_size;curr_line+=1) {
             _game_board[curr_line] = [];
-            for (curr_column = 0;curr_column<6;curr_column+=1) {
+            for (curr_column = 0;curr_column<_board_size;curr_column+=1) {
                 _game_board[curr_line][curr_column]="empty";
             }
         }
@@ -48,52 +52,10 @@ var Engine = function() {
     }
 
 
-
-    function get_start_column_sub_board (num_sub_board) {
-
-        var start_column = -1;
-
-        switch (num_sub_board) {
-
-            case 1:
-            case 3:
-                start_column = 0;
-                break;
-
-            case 2:
-            case 4:
-                start_column = 3;
-                break;
-
-        }
-        return start_column;
-
-    }
-
-    function get_start_line_sub_board(numb_sub_board) {
-
-        var start_line = -1;
-
-        switch (numb_sub_board) {
-
-            case 1:
-            case 2:
-                start_line = 0;
-                break;
-
-            case 3:
-            case 4:
-                start_line = 3;
-                break;
-
-        }
-        return start_line;
-    }
-
     function get_sub_board (num_sub_board) {
 
-        var start_line = get_start_line_sub_board(num_sub_board);
-        var start_column = get_start_column_sub_board(num_sub_board);
+        var start_line = Math.floor(num_sub_board / sub_board_per_line)*sub_board_size;
+        var start_column = (num_sub_board % sub_board_per_line)*sub_board_size;
         var curr_line; var curr_column;
         var curr_tmp_line = 0;  var curr_tmp_column = 0;
         var tmp_board = create_sub_board(3);
@@ -108,15 +70,15 @@ var Engine = function() {
         return tmp_board;
     }
 
-    function copy_tmp_board(numPlateau, tmp_board) {
+    function copy_tmp_board(num_sub_board, tmp_board) {
 
-        var startColumn = get_start_column_sub_board(numPlateau);
-        var startLine = get_start_line_sub_board(numPlateau);
+        var start_line = Math.floor(num_sub_board / sub_board_per_line)*sub_board_size;
+        var start_column = (num_sub_board % sub_board_per_line)*sub_board_size;
         var curr_line; var curr_column;
         var curr_sb_line = 0; var curr_sb_column = 0;
 
-        for (curr_line = startLine; curr_line < startLine + 3; curr_line += 1) {
-            for (curr_column = startColumn; curr_column < startColumn + 3; curr_column += 1) {
+        for (curr_line = start_line; curr_line < start_line + 3; curr_line += 1) {
+            for (curr_column = start_column; curr_column < start_column + 3; curr_column += 1) {
                 _game_board[curr_line][curr_column] = tmp_board[curr_sb_line][curr_sb_column];
                 curr_sb_column+=1;
         }
@@ -131,20 +93,63 @@ var Engine = function() {
         switch(action_code) {
 
             case "tl":
-                num = 1;
+                num = 0;
                 break;
             case "tr":
-                num = 2;
+                num = 1;
                 break;
             case "bl":
-                num = 3;
+                num = 2;
                 break;
             case "br":
-                num = 4;
+                num = 3;
                 break;
         }
         return num;
     }
+
+    function init_all_size() {
+        switch(type) {
+
+            case "normal":
+                sub_board_per_line = 2;
+                _board_size = 6;
+                break;
+            case "xl":
+                sub_board_per_line = 3;
+                _board_size = 9;
+                break;
+
+        }
+        sub_board_size = 3;
+
+    }
+
+    function init_players_colors() {
+        switch(type) {
+            case "normal":
+            _player_colors = ["black","white"];
+                break;
+            case "xl":
+                _player_colors = ["red","yellow","green","blue"];
+                break;
+        }
+
+    }
+
+    function get_player_index(color) {
+
+        var cntPlayer;
+        for (cntPlayer = 0 ; cntPlayer < _player_colors.length;cntPlayer+=1) {
+            if (color==_player_colors[cntPlayer]) {
+                return cntPlayer;
+            }
+        }
+
+        return  -1;
+    }
+
+
 
 // public methods
 
@@ -156,13 +161,18 @@ var Engine = function() {
         return _free_space;
     }
 
+    this.get_actual_player = function() {
+        return _actual_player;
+    }
+
     this.start_the_game = function() {
         _game_board = [];
         _actual_player = "";
         _total_balls = 0;
-        _free_space = 6*6;
-        _size_per_line = 6;
-        add_sub_boards(6);
+        init_all_size();
+        _free_space = _board_size*_board_size;
+        init_players_colors();
+        add_sub_boards();
     }
 
     this.show_board = function(array) {
@@ -181,10 +191,20 @@ var Engine = function() {
         console.log(display);
     }
 
+    this.get_board_size = function() {
+        return _board_size;
+    }
 
 
     this.set_start_player = function (start_player_color) {
-        _actual_player = start_player_color;
+
+        if (get_player_index(start_player_color)!=-1) {
+            _actual_player = start_player_color;
+        }
+        else {
+            throw "Ce joueur n'existe pas";
+        }
+
     }
 
     this.check_board = function () {
@@ -192,8 +212,8 @@ var Engine = function() {
         var curr_line;
         var curr_column;
 
-        for (curr_line = 0; curr_line < 6; curr_line+=1) {
-            for (curr_column = 0; curr_column < 6; curr_column+=1) {
+        for (curr_line = 0; curr_line < _board_size; curr_line+=1) {
+            for (curr_column = 0; curr_column < _board_size; curr_column+=1) {
                 if (_game_board[curr_line][curr_column] !== "empty") {
                     return false;
                 }
@@ -296,21 +316,22 @@ var Engine = function() {
 
 
    this.next_turn = function () {
-        if (_actual_player === "white") {
-            _actual_player = "black";
-        }
-        else if (_actual_player == "black"){
-            _actual_player = "white";
-        }
+        var nextIndex = get_player_index(_actual_player)+1;
+       if (nextIndex>_player_colors.length-1) {
+           nextIndex = 0;
+       }
+
+
+       _actual_player = _player_colors[nextIndex];
 
     }
 
     this.check_win_line = function () {
         var nb_align; var cur_line; var cur_column;
 
-        for (cur_line = 0;cur_line<6;cur_line+=1) {
+        for (cur_line = 0;cur_line<_board_size;cur_line+=1) {
             nb_align=1;
-            for (cur_column = 0;cur_column <6-1;cur_column+=1) {
+            for (cur_column = 0;cur_column <_board_size-1;cur_column+=1) {
 
                 if (_game_board[cur_line][cur_column] ===_game_board[cur_line][cur_column+1]) {
 
@@ -331,7 +352,7 @@ var Engine = function() {
         var nb_align; var curr_line; var curr_column;
         for (curr_column = 0;curr_column<6;curr_column+=1) {
             nb_align=1;
-            for (curr_line = 0;curr_line <6-1;curr_line+=1) {
+            for (curr_line = 0;curr_line <_board_size-1;curr_line+=1) {
                 if (_game_board[curr_line][curr_column]===_game_board[curr_line+1][curr_column]) {
                     nb_align+=1;
                     if (nb_align===5) {

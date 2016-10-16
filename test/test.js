@@ -88,25 +88,32 @@ PalettoTestCase.prototype.testStory9 = function () {
 PalettoTestCase.prototype.testStory10 = function () {
 
     var testVerif=false;
+    eng.set_start_player("white");
 
     eng.place_ball("white","b1");
     eng.rotate("c",1);
+    eng.next_turn();
 
     eng.place_ball("black","a2");
     eng.rotate("a",1);
+    eng.next_turn();
 
 
     eng.place_ball("white","c1");
     eng.rotate("c",1);
+    eng.next_turn();
 
     eng.place_ball("black","a3");
     eng.rotate("a",1);
+    eng.next_turn();
 
     eng.place_ball("white","d1");
     eng.rotate("a",2);
+    eng.next_turn();
 
     eng.place_ball("black","f3");
     eng.rotate("c",2);
+    eng.next_turn();
 
     if (eng.check_nb_balls(8)
         &&eng.check_ball("white","a1") &&eng.check_ball("white","b1")
@@ -123,6 +130,8 @@ PalettoTestCase.prototype.testStory10 = function () {
 PalettoTestCase.prototype.testStory11 = function () {
 
     var testVerif=false;
+
+
     eng.place_ball("white","e1");
 
     if (eng.check_win_line(0,1)==="white") {
@@ -143,7 +152,7 @@ PalettoTestCase.prototype.testStory12 = function () {
     var diag_bottom_top = eng.get_diagonal(eng.get_board(),true);
     var winner = eng.check_diag_align(diag_bottom_top);
 
-    if (winner=="black") {
+    if (winner==="black") {
         testVerif = true;
     }
 
@@ -173,7 +182,9 @@ PalettoTestCase.prototype.testStory14 = function () {
 
     eng.start_the_game();
     eng.set_start_player("white");
+
     eng.play_turn_list("a1cbl;d1cbr;b1cbl;e1cbr;c1cbl;f1cbr");
+
     eng.play_turn_list("a2cbl;d2cbr;b2cbl;e2cbr;c2cbl;f2cbr");
     eng.play_turn_list("a3cbl;d3cbr;b3cbl;e3cbr;c3cbl;f3cbr");
     eng.play_turn_list("b5ctl;a4ctr;e4ctl;b4ctr;f4ctl;d4ctr");
@@ -196,4 +207,6 @@ PalettoTestCase.prototype.testStory14 = function () {
     assertTrue(testVerif===true);
 
 };
+
+
 

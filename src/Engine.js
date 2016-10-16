@@ -220,13 +220,16 @@ var Engine = function() {
         var line_to_place = get_line_ascii(position);
         var column_to_place = get_column_ascii(position);
 
-
         if (_game_board[line_to_place][column_to_place] !== "empty") {
             throw "Emplacement déjà occupé par "+_game_board[line_to_place][column_to_place];
         }
 
+        if (color!=_actual_player) {
+            throw "Impossible de placer une bille différente de la couleur du joueur";
+        }
+
         _game_board[line_to_place][column_to_place] = color;
-        _total_balls+=1;
+        _total_balls++;
         _free_space--;
     }
 
@@ -296,7 +299,7 @@ var Engine = function() {
         if (_actual_player === "white") {
             _actual_player = "black";
         }
-        else {
+        else if (_actual_player == "black"){
             _actual_player = "white";
         }
 

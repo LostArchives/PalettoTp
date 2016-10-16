@@ -208,5 +208,23 @@ PalettoTestCase.prototype.testStory14 = function () {
 
 };
 
+PalettoTestCase.prototype.testStory15 = function () {
 
+    var testVerif=false;
+
+    eng.start_the_game();
+    eng.set_start_player("white");
+
+    try {
+        eng.place_ball("black","a1");
+    }
+    catch(err) {
+
+        testVerif = true;
+        console.log(err);
+    }
+
+    assertTrue(testVerif===true);
+
+};
 

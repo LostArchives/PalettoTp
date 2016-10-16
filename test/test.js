@@ -271,6 +271,30 @@ PalettoTestCase.prototype.testStory17 = function () {
 
 };
 
+PalettoTestCase.prototype.testStory18 = function () {
+
+    var testVerif=true;
+
+    xl.start_the_game(3);
+    console.log("Test story 18 :");
+    console.log(xl.get_active_players());
+
+    if (xl.get_active_players().length==3)
+    {
+        var order = xl.get_order_array();
+        for (var cnt = 0 ;cnt<order.length;cnt+=1) {
+            if (order[cnt]>order[cnt+1]) {
+                testVerif = false;
+                break;
+            }
+
+
+        }
+    }
+
+    assertTrue(testVerif===true);
+
+};
 
 
 

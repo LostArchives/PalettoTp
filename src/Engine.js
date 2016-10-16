@@ -6,6 +6,8 @@ var Engine = function() {
     var _game_board;
     var _total_balls;
     var _actual_player;
+    var _size_per_line;
+    var _free_space;
 
     function get_column_ascii  (column_position) {
         return column_position.charCodeAt(0) - 97;
@@ -22,7 +24,7 @@ var Engine = function() {
         var curr_column;
 
         for (curr_line =0;curr_line<nb_line;curr_line+=1) {
-            _game_board[curr_line] = new Array();
+            _game_board[curr_line] = [];
             for (curr_column = 0;curr_column<6;curr_column+=1) {
                 _game_board[curr_line][curr_column]="empty";
             }
@@ -30,15 +32,13 @@ var Engine = function() {
 
     }
 
-
-
     function create_sub_board(nb_line) {
 
         var curr_line;
         var curr_column;
-        var tmp_board = new Array();
+        var tmp_board = [];
         for (curr_line =0;curr_line<nb_line;curr_line+=1) {
-            tmp_board[curr_line] = new Array();
+            tmp_board[curr_line] = [];
             for (curr_column = 0;curr_column<nb_line;curr_column+=1) {
                 tmp_board[curr_line][curr_column]="empty";
             }
@@ -148,31 +148,44 @@ var Engine = function() {
 
 // public methods
 
+    this.get_board = function() {
+        return _game_board;
+    }
+
+    this.get_free = function() {
+        return _free_space;
+    }
+
     this.start_the_game = function() {
-        _game_board = new Array();
+        _game_board = [];
         _actual_player = "";
         _total_balls = 0;
+        _free_space = 6*6;
+        _size_per_line = 6;
         add_sub_boards(6);
     }
 
-    this.show_board = function() {
+    this.show_board = function(array) {
 
         var curr_line;
+        var curr_column;
+        var display = "\n";
 
-        for (curr_line = 0;curr_line<6;curr_line+=1) {
-
-                console.log(_game_board[curr_line][0]+" "+_game_board[curr_line][1]+" "+
-                            _game_board[curr_line][2]+" "+_game_board[curr_line][3]+" " +
-                            _game_board[curr_line][4]+" "+_game_board[curr_line][5]);
-
+        for (curr_line = 0;curr_line<array.length;curr_line+=1) {
+                for (curr_column = 0;curr_column<array.length;curr_column+=1) {
+                    display +=_game_board[curr_line][curr_column]+" ";
+                }
+                display+="\n";
         }
+
+        console.log(display);
     }
 
 
 
     this.set_start_player = function (start_player_color) {
         _actual_player = start_player_color;
-    };
+    }
 
     this.check_board = function () {
 
@@ -181,7 +194,7 @@ var Engine = function() {
 
         for (curr_line = 0; curr_line < 6; curr_line+=1) {
             for (curr_column = 0; curr_column < 6; curr_column+=1) {
-                if (_game_board[curr_line][curr_column] != "empty") {
+                if (_game_board[curr_line][curr_column] !== "empty") {
                     return false;
                 }
             }
@@ -189,7 +202,7 @@ var Engine = function() {
 
         return true;
 
-    };
+    }
 
     this.check_player_color = function (player_color) {
 
@@ -200,7 +213,7 @@ var Engine = function() {
             return false;
         }
 
-    };
+    }
 
     this.place_ball = function (color, position) {
 
@@ -208,13 +221,14 @@ var Engine = function() {
         var column_to_place = get_column_ascii(position);
 
 
-        if (_game_board[line_to_place][column_to_place] != "empty") {
+        if (_game_board[line_to_place][column_to_place] !== "empty") {
             throw "Emplacement déjà occupé par "+_game_board[line_to_place][column_to_place];
         }
 
         _game_board[line_to_place][column_to_place] = color;
         _total_balls+=1;
-    };
+        _free_space--;
+    }
 
 
 
@@ -231,7 +245,7 @@ var Engine = function() {
         }
 
 
-    };
+    }
 
 
     this.check_nb_balls = function (nb_balls) {
@@ -242,7 +256,7 @@ var Engine = function() {
         else {
             return false;
         }
-    };
+    }
 
 
     this.check_actual_player = function (player) {
@@ -255,7 +269,7 @@ var Engine = function() {
         }
 
 
-    };
+    }
 
 
     this.rotate = function (mode, num_sub_board) {
@@ -275,7 +289,7 @@ var Engine = function() {
             }
             copy_tmp_board(num_sub_board, tmp_board);
         }
-    };
+    }
 
 
    this.next_turn = function () {
@@ -286,27 +300,29 @@ var Engine = function() {
             _actual_player = "white";
         }
 
-    };
+    }
 
     this.check_win_line = function () {
-        var nb_align; var curr_line; var curr_column;
-        for (curr_line = 0;curr_line<6;curr_line+=1) {
+        var nb_align; var cur_line; var cur_column;
+
+        for (cur_line = 0;cur_line<6;cur_line+=1) {
             nb_align=1;
-            for (curr_column = 0;curr_column <6-1;curr_column+=1) {
-                if (_game_board[curr_line][curr_column]===_game_board[curr_line][curr_column+1]) {
+            for (cur_column = 0;cur_column <6-1;cur_column+=1) {
+
+                if (_game_board[cur_line][cur_column] ===_game_board[cur_line][cur_column+1]) {
+
                     nb_align+=1;
                     if (nb_align===5) {
-                        return _game_board[curr_line][curr_column];
+                        return _game_board[cur_line][cur_column];
                     }
-
                 }
                 else {
-                    nb_align=0;
+                    nb_align=1;
                 }
             }
         }
         return "";
-    };
+    }
 
     this.check_win_column = function () {
         var nb_align; var curr_line; var curr_column;
@@ -320,50 +336,74 @@ var Engine = function() {
                     }
                 }
                 else {
-                    nb_align=0;
+                    nb_align=1;
                 }
 
             }
         }
         return "";
-    };
+    }
 
+    this.get_diagonal = function(board, bottomToTop) {
+        var line_length = board.length;
+        var column_length = board[0].length;
+        var max_length = Math.max(column_length, line_length);
+        var temp_array = new Array();
+        var diag_array = new Array();
+        for (var diag_cnt = 0; diag_cnt <= 2 * (max_length - 1); diag_cnt++) {
+            temp_array = new Array();
+            for (var diag_line = line_length - 1; diag_line >= 0; diag_line--) {
+                var diag_column = diag_cnt - (bottomToTop ? line_length - diag_line : diag_line);
+                if (diag_column >= 0 && diag_column < column_length) {
+                    var toPush = board[diag_line][diag_column];
 
-
-    this.check_win_left_diag = function () {
-        var cur_diag; var size = 6; var nb_align = 1;
-        for (cur_diag=0;cur_diag<size-1;cur_diag+=1) {
-                if (_game_board[cur_diag][cur_diag]==_game_board[cur_diag+1][cur_diag+1]) {
-                    nb_align+=1;
-                    if (nb_align===5) {
-                        return _game_board[cur_diag][cur_diag];
+                    if (bottomToTop && diag_column!=0 && diag_line!=0) {
+                        toPush+=";";
                     }
-                } else {
-                    nb_align = 0;
+                    if (!bottomToTop && diag_line!=0 && diag_column!=column_length-1) {
+                        toPush+=";";
+                    }
+
+                    temp_array.push(toPush);
                 }
+            }
+            if(temp_array.length > 0) {
+                diag_array.push(temp_array.join(''));
+            }
+        }
+        return diag_array;
+    }
+
+    this.check_diag_align = function(arr) {
+
+        var cnt_diag;
+
+        for (cnt_diag = 0 ;cnt_diag<arr.length;cnt_diag++) {
+
+            var diag = arr[cnt_diag].split(";");
+            var cnt_color;
+            var nb_align = 1;
+            if (diag.length>=5) {
+
+                for (cnt_color = 0 ; cnt_color<diag.length-1;cnt_color++) {
+                    if (diag[cnt_color]!="empty") {
+                        if (diag[cnt_color]==diag[cnt_color+1])
+                            nb_align++;
+                        else
+                            nb_align = 1;
+
+                        if (nb_align==5)
+                            return diag[cnt_color];
+                    }
+
+                }
+
+            }
+
 
         }
         return "";
-    };
-
-
-    this.check_win_right_diag = function () {
-        var cur_pos; var size = 6; var nb_align = 1;
-        for (cur_pos=0;cur_pos<size-1;cur_pos+=1) {
-                if (_game_board[cur_pos][size-cur_pos]===_game_board[cur_pos+1][size-cur_pos-1]) {
-                    nb_align+=1;
-                    if (nb_align===5) {
-                        return _game_board[cur_pos][cur_pos];
-                    }
-                    else {
-                        nb_align =0;
-                    }
-
-                }
-
-        }
-        return "";
-    };
+    }
 
 
     this.play_turn_list = function (action_text) {

@@ -7,11 +7,13 @@ var Engine = function(type) {
     var _total_balls;
     var _actual_player;
     var _board_size;
-    var sub_board_size;
-    var sub_board_per_line;
+    var _sub_board_size;
+    var _sub_board_per_line;
+    var _total_subBoard;
     var _free_space;
+    var _free_positions;
     var _player_colors;
-    var active_players;
+    var _active_players;
     var nb_players;
 
 
@@ -56,8 +58,8 @@ var Engine = function(type) {
 
     function get_sub_board (num_sub_board) {
 
-        var start_line = Math.floor(num_sub_board / sub_board_per_line)*sub_board_size;
-        var start_column = (num_sub_board % sub_board_per_line)*sub_board_size;
+        var start_line = Math.floor(num_sub_board / _sub_board_per_line)*_sub_board_size;
+        var start_column = (num_sub_board % _sub_board_per_line)*_sub_board_size;
         var curr_line; var curr_column;
         var curr_tmp_line = 0;  var curr_tmp_column = 0;
         var tmp_board = create_sub_board(3);
@@ -74,8 +76,8 @@ var Engine = function(type) {
 
     function copy_tmp_board(num_sub_board, tmp_board) {
 
-        var start_line = Math.floor(num_sub_board / sub_board_per_line)*sub_board_size;
-        var start_column = (num_sub_board % sub_board_per_line)*sub_board_size;
+        var start_line = Math.floor(num_sub_board / _sub_board_per_line)*_sub_board_size;
+        var start_column = (num_sub_board % _sub_board_per_line)*_sub_board_size;
         var curr_line; var curr_column;
         var curr_sb_line = 0; var curr_sb_column = 0;
 
@@ -114,16 +116,18 @@ var Engine = function(type) {
         switch(type) {
 
             case "normal":
-                sub_board_per_line = 2;
+                _sub_board_per_line = 2;
                 _board_size = 6;
+                _total_subBoard = 4;
                 break;
             case "xl":
-                sub_board_per_line = 3;
+                _sub_board_per_line = 3;
                 _board_size = 9;
+                _total_subBoard = 9;
                 break;
 
         }
-        sub_board_size = 3;
+        _sub_board_size = 3;
 
     }
 
@@ -142,8 +146,8 @@ var Engine = function(type) {
     function get_player_index(color) {
 
         var cntPlayer;
-        for (cntPlayer = 0 ; cntPlayer < active_players.length;cntPlayer+=1) {
-            if (color==active_players[cntPlayer]) {
+        for (cntPlayer = 0 ; cntPlayer < _active_players.length;cntPlayer+=1) {
+            if (color==_active_players[cntPlayer]) {
                 return cntPlayer;
             }
         }
@@ -152,26 +156,22 @@ var Engine = function(type) {
     }
 
     function init_active_players() {
-        var cntPlayer;
-        var color;
 
         if (type=="xl")
         {
             if (nb_players==3) {
 
-            active_players = new Array();
+            _active_players = new Array();
             random_player_color();
-
             }
-
             else
             {
-                active_players = _player_colors;
+                _active_players = _player_colors;
             }
         }
         else
         {
-            active_players = _player_colors;
+            _active_players = _player_colors;
         }
     }
 
@@ -184,11 +184,11 @@ var Engine = function(type) {
 
                 do {
                     color = Math.floor(Math.random() * _player_colors.length);
-                    index = active_players.indexOf(_player_colors[color]);
+                    index = _active_players.indexOf(_player_colors[color]);
 
                 } while (index!=-1)
 
-            active_players[cntPlayer] = _player_colors[color];
+            _active_players[cntPlayer] = _player_colors[color];
 
         }
         reorder_player();
@@ -199,7 +199,7 @@ var Engine = function(type) {
         var todelete = -1;
         var cntcolor;
         for (cntcolor = 0 ;cntcolor< 3;cntcolor+=1) {
-            var index =  active_players.indexOf(_player_colors[cntcolor]);
+            var index =  _active_players.indexOf(_player_colors[cntcolor]);
             if (index==-1) {
                 todelete = cntcolor;
                 break;
@@ -222,8 +222,28 @@ var Engine = function(type) {
     function delete_color_not_in(index) {
         var temp = copy_color();
         _player_colors.splice(index,1);
-        active_players = _player_colors;
+        _active_players = _player_colors;
         _player_colors = temp;
+    }
+
+
+
+    function update_free_positions() {
+        var cnt_line;
+        var cnt_column;
+        var global_cnt = 0;
+
+        _free_positions = new Array();
+        for (cnt_line = 0 ;cnt_line < _board_size ; cnt_line+=1) {
+            for (cnt_column = 0 ; cnt_column < _board_size ; cnt_column+=1) {
+                if (_game_board[cnt_line][cnt_column]=="empty") {
+                    var letter = String.fromCharCode(97+cnt_column);
+                    _free_positions[global_cnt] = letter+(cnt_line+1);
+                    global_cnt++;
+                }
+            }
+
+        }
     }
 
 
@@ -234,7 +254,7 @@ var Engine = function(type) {
         return _game_board;
     }
 
-    this.get_free = function() {
+    this.get_free_space = function() {
         return _free_space;
     }
 
@@ -243,7 +263,15 @@ var Engine = function(type) {
     }
 
     this.get_active_players = function() {
-        return active_players;
+        return _active_players;
+    }
+
+    this.get_free_positions = function() {
+        return _free_positions;
+    }
+
+    this.get_total_subBoard = function() {
+        return _total_subBoard;
     }
 
     this.start_the_game = function(nbPlayer) {
@@ -256,6 +284,7 @@ var Engine = function(type) {
         init_players_colors();
         init_active_players();
         add_sub_boards();
+        update_free_positions();
     }
 
     this.show_board = function(array) {
@@ -323,8 +352,8 @@ var Engine = function(type) {
         var line_to_place = get_line_ascii(position);
         var column_to_place = get_column_ascii(position);
 
-        if (_game_board[line_to_place][column_to_place] !== "empty") {
-            throw "Emplacement déjà occupé par "+_game_board[line_to_place][column_to_place];
+        if (_game_board[line_to_place][column_to_place] != "empty") {
+            throw "Emplacement déjà occupé par "+_game_board[line_to_place][column_to_place]+" en "+position + " "+line_to_place+" "+column_to_place;
         }
 
         if (color!=_actual_player) {
@@ -334,6 +363,8 @@ var Engine = function(type) {
         _game_board[line_to_place][column_to_place] = color;
         _total_balls++;
         _free_space--;
+        update_free_positions();
+
     }
 
 
@@ -395,18 +426,18 @@ var Engine = function(type) {
             }
             copy_tmp_board(num_sub_board, tmp_board);
         }
+        update_free_positions();
     }
 
 
    this.next_turn = function () {
 
        var nextIndex = get_player_index(_actual_player)+1;
-       if (nextIndex>active_players.length-1) {
+       if (nextIndex>_active_players.length-1) {
            nextIndex = 0;
        }
 
-
-       _actual_player = active_players[nextIndex];
+       _actual_player = _active_players[nextIndex];
 
     }
 
@@ -416,7 +447,7 @@ var Engine = function(type) {
         for (cur_line = 0;cur_line<_board_size;cur_line+=1) {
             nb_align=1;
             for (cur_column = 0;cur_column <_board_size-1;cur_column+=1) {
-
+                if (_game_board[cur_line][cur_column]!="empty")
                 if (_game_board[cur_line][cur_column] ===_game_board[cur_line][cur_column+1]) {
 
                     nb_align+=1;
@@ -437,6 +468,7 @@ var Engine = function(type) {
         for (curr_column = 0;curr_column<6;curr_column+=1) {
             nb_align=1;
             for (curr_line = 0;curr_line <_board_size-1;curr_line+=1) {
+                if (_game_board[curr_line][curr_column]!="empty")
                 if (_game_board[curr_line][curr_column]===_game_board[curr_line+1][curr_column]) {
                     nb_align+=1;
                     if (nb_align===5) {
@@ -533,7 +565,7 @@ var Engine = function(type) {
         var order_arr = new Array();
 
         for (var cnt = 0 ;cnt<3;cnt+=1) {
-            order_arr[cnt]= _player_colors.indexOf(active_players[cnt]);
+            order_arr[cnt]= _player_colors.indexOf(_active_players[cnt]);
         }
 
         return order_arr;

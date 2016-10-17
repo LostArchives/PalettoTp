@@ -202,7 +202,7 @@ PalettoTestCase.prototype.testStory14 = function () {
         &&eng.check_win_column()===""
         &&eng.check_diag_align(diag_bottom_top)===""
         &&eng.check_diag_align(diag_top_bottom)===""
-        &&eng.get_free() === 0)
+        &&eng.get_free_space() === 0)
     {
         testVerif=true;
     }
@@ -295,6 +295,8 @@ PalettoTestCase.prototype.testStory18 = function () {
     assertTrue(testVerif===true);
 
 };
+
+
 
 
 

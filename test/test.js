@@ -380,7 +380,88 @@ PalettoTestCase.prototype.testStory19 = function () {
 
 };
 
+PalettoTestCase.prototype.testStory20 = function () {
 
+    var testVerif=false;
+
+    xl.start_the_game(4);
+    xl.set_start_player("red");
+
+    var winner = "";
+    var reason = "";
+
+    while(xl.get_free_space()!==0 && winner==="") {
+
+        var randomPositionIndex = Math.floor(Math.random() * xl.get_free_positions().length);
+        var randomPosition = xl.get_free_positions()[randomPositionIndex];
+
+        xl.place_ball(xl.get_actual_player(),randomPosition);
+
+        var randomSubBoard =  Math.floor(Math.random() * xl.get_total_subBoard());
+        var randomOrientation = Math.round(Math.random());
+
+        var rotationMode;
+
+        if (randomOrientation===0) {
+            rotationMode = "a";
+        }
+        else
+        {
+            rotationMode = "c";
+        }
+
+        xl.rotate(rotationMode,randomSubBoard);
+
+        winner = xl.check_win_line();
+
+        if (winner!=="") {
+            reason = "line";
+            break;
+        }
+
+        winner =  xl.check_win_column();
+
+        if (winner!=="") {
+            reason = "column";
+            break;
+        }
+
+        var  bottom_top_diags = xl.get_diagonal(true);
+        var  top_bottom_diags = xl.get_diagonal(false);
+
+        winner = xl.check_diag_align(bottom_top_diags);
+
+        if (winner!=="") {
+            reason = "diagonal";
+            break;
+        }
+
+        winner = xl.check_diag_align(top_bottom_diags);
+
+        if (winner!=="") {
+            reason = "diagonal";
+            break;
+        }
+
+        xl.next_turn();
+
+    }
+
+    console.log("\nTest story 20 : ");
+
+    xl.show_board();
+
+    if (winner==="") {
+        console.log("There is no winner");
+    }
+    else {
+        console.log("The winner is "+winner+" with a "+reason);
+    }
+    testVerif = true;
+
+    assertTrue(testVerif===true);
+
+};
 
 
 

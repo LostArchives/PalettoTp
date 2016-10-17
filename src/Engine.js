@@ -287,14 +287,14 @@ var Engine = function(type) {
         update_free_positions();
     }
 
-    this.show_board = function(array) {
+    this.show_board = function() {
 
         var curr_line;
         var curr_column;
         var display = "\n";
 
-        for (curr_line = 0;curr_line<array.length;curr_line+=1) {
-                for (curr_column = 0;curr_column<array.length;curr_column+=1) {
+        for (curr_line = 0;curr_line<_board_size;curr_line+=1) {
+                for (curr_column = 0;curr_column<_board_size;curr_column+=1) {
                     display +=_game_board[curr_line][curr_column]+" ";
                 }
                 display+="\n";
@@ -349,18 +349,18 @@ var Engine = function(type) {
 
     this.place_ball = function (color, position) {
 
-        var line_to_place = get_line_ascii(position);
-        var column_to_place = get_column_ascii(position);
+        var line_pos = get_line_ascii(position);
+        var column_pos = get_column_ascii(position);
 
-        if (_game_board[line_to_place][column_to_place] != "empty") {
-            throw "Emplacement déjà occupé par "+_game_board[line_to_place][column_to_place]+" en "+position + " "+line_to_place+" "+column_to_place;
+        if (_game_board[line_pos][column_pos] != "empty") {
+            throw "Emplacement déjà occupé par "+_game_board[line_pos][column_pos]+" en "+position;
         }
 
         if (color!=_actual_player) {
             throw "Impossible de placer une bille différente de la couleur du joueur";
         }
 
-        _game_board[line_to_place][column_to_place] = color;
+        _game_board[line_pos][column_pos] = color;
         _total_balls++;
         _free_space--;
         update_free_positions();
@@ -484,9 +484,9 @@ var Engine = function(type) {
         return "";
     }
 
-    this.get_diagonal = function(board, bottomToTop) {
-        var line_length = board.length;
-        var column_length = board[0].length;
+    this.get_diagonal = function(bottomToTop) {
+        var line_length = _game_board.length;
+        var column_length = _game_board[0].length;
         var max_length = Math.max(column_length, line_length);
         var temp_array = new Array();
         var diag_array = new Array();
@@ -495,7 +495,7 @@ var Engine = function(type) {
             for (var diag_line = line_length - 1; diag_line >= 0; diag_line--) {
                 var diag_column = diag_cnt - (bottomToTop ? line_length - diag_line : diag_line);
                 if (diag_column >= 0 && diag_column < column_length) {
-                    var toPush = board[diag_line][diag_column];
+                    var toPush = _game_board[diag_line][diag_column];
 
                     if (bottomToTop && diag_column!=0 && diag_line!=0) {
                         toPush+=";";

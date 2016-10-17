@@ -195,8 +195,8 @@ PalettoTestCase.prototype.testStory14 = function () {
     console.log("Test story 15");
     eng.show_board(eng.get_board());
 
-    var diag_bottom_top = eng.get_diagonal(eng.get_board(),true);
-    var diag_top_bottom = eng.get_diagonal(eng.get_board(),false);
+    var diag_bottom_top = eng.get_diagonal(true);
+    var diag_top_bottom = eng.get_diagonal(false);
 
     if (eng.check_win_line()===""
         &&eng.check_win_column()===""
@@ -239,7 +239,7 @@ PalettoTestCase.prototype.testStory16 = function () {
     xl.set_start_player("red");
     xl.place_ball(xl.get_actual_player(),"i1");
     console.log("Test story 16 :");
-    xl.show_board(xl.get_board());
+    xl.show_board();
 
     if (xl.get_board_size()===9 && xl.check_actual_player("red")) {
         testVerif = true;
@@ -276,7 +276,7 @@ PalettoTestCase.prototype.testStory18 = function () {
     var testVerif=true;
 
     xl.start_the_game(3);
-    console.log("Test story 18 :");
+    console.log("\nTest story 18 :");
     console.log(xl.get_active_players());
 
     if (xl.get_active_players().length==3)
@@ -298,7 +298,7 @@ PalettoTestCase.prototype.testStory18 = function () {
 
 PalettoTestCase.prototype.testStory19 = function () {
 
-    var testVerif=true;
+    var testVerif=false;
 
     eng.start_the_game(2);
     eng.set_start_player("white");
@@ -328,7 +328,7 @@ PalettoTestCase.prototype.testStory19 = function () {
 
         eng.rotate(rotationMode,randomSubBoard);
 
-        var winner = eng.check_win_line();
+        winner = eng.check_win_line();
 
         if (winner!=="") {
             reason = "line";
@@ -342,8 +342,8 @@ PalettoTestCase.prototype.testStory19 = function () {
             break;
         }
 
-        var  bottom_top_diags = eng.get_diagonal(eng.get_board(),true);
-        var  top_bottom_diags = eng.get_diagonal(eng.get_board(),true);
+        var  bottom_top_diags = eng.get_diagonal(true);
+        var  top_bottom_diags = eng.get_diagonal(false);
 
         winner = eng.check_diag_align(bottom_top_diags);
 
@@ -363,9 +363,9 @@ PalettoTestCase.prototype.testStory19 = function () {
 
     }
 
-    console.log("Test story 19 : ");
+    console.log("\nTest story 19 : ");
 
-    eng.show_board(eng.get_board());
+    eng.show_board();
 
     if (winner==="") {
         console.log("There is no winner");
@@ -374,9 +374,13 @@ PalettoTestCase.prototype.testStory19 = function () {
         console.log("The winner is "+winner+" with a "+reason);
     }
 
+    testVerif = true;
+
     assertTrue(testVerif===true);
 
 };
+
+
 
 
 
